@@ -1,0 +1,62 @@
+const CHECKOUT = {
+  ACTIVE: 'ACTIVE',
+  PAYMENT_PROCESSING: 'PAYMENT_PROCESSING',
+  COMPLETED: 'COMPLETED',
+  EXPIRED: 'EXPIRED',
+  FAILED: 'FAILED',
+};
+
+const RESERVATION = {
+  ACTIVE: 'ACTIVE',
+  CONSUMED: 'CONSUMED',
+  RELEASED: 'RELEASED',
+  EXPIRED: 'EXPIRED',
+};
+
+const ORDER = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+};
+
+const PAYMENT = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  TIMEOUT: 'TIMEOUT',
+  REFUNDED: 'REFUNDED',
+};
+
+const REFUND = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+};
+
+const PAYMENT_OUTCOMES = ['success', 'failure', 'timeout'];
+
+const SORT_OPTIONS = {
+  price_asc: 'p.price ASC, p.name ASC',
+  price_desc: 'p.price DESC, p.name ASC',
+  newest: 'p.created_at DESC',
+};
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const CONCURRENCY_PRODUCT_ID = '22222222-2222-4222-8222-222222222222';
+
+module.exports = {
+  CHECKOUT,
+  RESERVATION,
+  ORDER,
+  PAYMENT,
+  REFUND,
+  PAYMENT_OUTCOMES,
+  SORT_OPTIONS,
+  UUID_REGEX,
+  CONCURRENCY_PRODUCT_ID,
+};

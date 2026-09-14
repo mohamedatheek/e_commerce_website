@@ -1,0 +1,26 @@
+{
+  "name": "northline-checkout-api",
+  "version": "1.0.0",
+  "description": "E-Commerce Checkout & Payment System API (Task 02)",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "migrate": "node src/db/migrate.js",
+    "seed": "node src/db/seed.js",
+    "test": "node --test tests/stateMachine.test.js",
+    "test:concurrency": "node scripts/concurrencyTest.js",
+    "test:idempotency": "node scripts/idempotencyTest.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1"
+  }
+}
