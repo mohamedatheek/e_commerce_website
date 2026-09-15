@@ -1,16 +1,16 @@
-import api from './api';
+import api, { unwrapList, unwrapPayload } from './api';
 
 export async function fetchProducts(params) {
-  const { data } = await api.get('/products', { params });
-  return data.data;
+  const response = await api.get('/products', { params });
+  return unwrapList(response);
 }
 
 export async function fetchProduct(id) {
-  const { data } = await api.get(`/products/${id}`);
-  return data.data;
+  const response = await api.get(`/products/${id}`);
+  return unwrapPayload(response);
 }
 
 export async function fetchCategories() {
-  const { data } = await api.get('/products/categories');
-  return data.data;
+  const response = await api.get('/products/categories');
+  return unwrapList(response);
 }

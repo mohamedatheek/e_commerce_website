@@ -5,7 +5,7 @@ export default function ToastViewport() {
 
   return (
     <div className="toast-wrap">
-      {toasts.map((toast) => (
+      {(Array.isArray(toasts) ? toasts : []).map((toast) => (
         <div key={toast.id} className={`toast ${toast.tone}`}>
           {toast.message}
         </div>

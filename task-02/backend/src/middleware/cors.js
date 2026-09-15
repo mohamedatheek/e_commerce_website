@@ -20,7 +20,11 @@ function corsOrigin(origin, callback) {
     return callback(null, true);
   }
 
-  return callback(new Error(`CORS blocked origin: ${origin}`));
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalized)) {
+    return callback(null, true);
+  }
+
+  return callback(null, false);
 }
 
 module.exports = { corsOrigin, allowedOrigins };

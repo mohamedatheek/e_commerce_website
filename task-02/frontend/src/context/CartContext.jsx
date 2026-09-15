@@ -15,11 +15,12 @@ function loadCart() {
 }
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(loadCart);
+  const [items, setItems] = useState(() => loadCart());
+  const safeItems = Array.isArray(items) ? items : [];
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safeItems));
+  }, [safeItems]);
 
   const addItem = useCallback((product, quantity = 1) => {
     const available = Number(product.availableStock ?? 0);
@@ -28,18 +29,19 @@ export function CartProvider({ children }) {
     }
 
     setItems((current) => {
-      const existing = current.find((item) => item.productId === product.id);
+      const list = Array.isArray(current) ? current : [];
+      const existing = list.find((item) => item.productId === product.id);
       const nextQuantity = (existing?.quantity || 0) + quantity;
       if (nextQuantity > available) {
         throw new Error(`Only ${available} available`);
       }
       if (existing) {
-        return current.map((item) =>
+        return list.map((item) =>
           item.productId === product.id ? { ...item, quantity: nextQuantity, availableStock: available } : item
         );
       }
       return [
-        ...current,
+        ...list,
         {
           productId: product.id,
           name: product.name,
@@ -54,7 +56,7 @@ export function CartProvider({ children }) {
 
   const setQuantity = useCallback((productId, quantity, availableStock) => {
     setItems((current) =>
-      current.map((item) => {
+      (Array.isArray(current) ? current : []).map((item) => {
         if (item.productId !== productId) return item;
         const max = availableStock ?? item.availableStock ?? 99;
         const next = Math.min(Math.max(1, quantity), max);
@@ -64,17 +66,17 @@ export function CartProvider({ children }) {
   }, []);
 
   const removeItem = useCallback((productId) => {
-    setItems((current) => current.filter((item) => item.productId !== productId));
+    setItems((current) => (Array.isArray(current) ? current : []).filter((item) => item.productId !== productId));
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
 
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const itemCount = safeItems.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = safeItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const value = useMemo(
     () => ({
-      items,
+      items: safeItems,
       addItem,
       setQuantity,
       removeItem,
@@ -82,7 +84,7 @@ export function CartProvider({ children }) {
       itemCount,
       subtotal,
     }),
-    [items, addItem, setQuantity, removeItem, clearCart, itemCount, subtotal]
+    [safeItems, addItem, setQuantity, removeItem, clearCart, itemCount, subtotal]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

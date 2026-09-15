@@ -20,4 +20,20 @@ api.interceptors.response.use(
   }
 );
 
+export function unwrapPayload(response) {
+  const body = response?.data;
+  if (Array.isArray(body)) {
+    return body;
+  }
+  if (body && typeof body === 'object' && 'data' in body) {
+    return body.data;
+  }
+  return body;
+}
+
+export function unwrapList(response) {
+  const value = unwrapPayload(response);
+  return Array.isArray(value) ? value : [];
+}
+
 export default api;

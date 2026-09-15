@@ -18,6 +18,9 @@ export default function CartPage() {
     setBusy(true);
     try {
       const checkout = await createCheckout(items);
+      if (!checkout?.id) {
+        throw new Error('Checkout session was not created');
+      }
       navigate(`/checkout/${checkout.id}`);
     } catch (error) {
       push(error.message, 'error');
@@ -26,7 +29,7 @@ export default function CartPage() {
     }
   }
 
-  if (items.length === 0) {
+  if (!Array.isArray(items) || items.length === 0) {
     return (
       <section className="page">
         <div className="hero">
@@ -46,7 +49,7 @@ export default function CartPage() {
       </div>
 
       <div className="stack">
-        {items.map((item) => (
+        {(Array.isArray(items) ? items : []).map((item) => (
           <article key={item.productId} className="card cart-line">
             <ProductImage src={item.imageUrl} alt={item.name} style={{ width: 88, height: 88, objectFit: 'cover', borderRadius: 12 }} />
             <div>

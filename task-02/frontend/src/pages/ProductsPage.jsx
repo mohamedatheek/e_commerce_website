@@ -26,8 +26,11 @@ export default function ProductsPage() {
 
   useEffect(() => {
     fetchCategories()
-      .then(setCategories)
-      .catch((error) => push(error.message, 'error'));
+      .then((result) => setCategories(Array.isArray(result) ? result : []))
+      .catch((err) => {
+        setCategories([]);
+        push(err.message, 'error');
+      });
   }, [push]);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function ProductsPage() {
         inStock: filters.inStock ? 'true' : undefined,
         sort: filters.sort,
       })
-        .then(setProducts)
+        .then((result) => setProducts(Array.isArray(result) ? result : []))
         .catch((err) => {
           setProducts([]);
           setError(err.message);
@@ -91,7 +94,8 @@ export default function ProductsPage() {
           <span>Category</span>
           <select value={filters.category} onChange={(event) => update('category', event.target.value)}>
             <option value="all">All</option>
-            {categories.map((category) => (
+            {Array.isArray(categories) &&
+              categories.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>
@@ -141,6 +145,8 @@ export default function ProductsPage() {
         <Loading label="Loading products…" />
       ) : error ? (
         <EmptyState title="Could not load products" body={error} />
+      ) : !Array.isArray(products) ? (
+        <EmptyState title="Unable to load products" body="The product list was not a valid array." />
       ) : products.length === 0 ? (
         <EmptyState title="No matching products" body="Try clearing a filter or searching a different term." />
       ) : (

@@ -15,8 +15,9 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders()
-      .then(setOrders)
+      .then((result) => setOrders(Array.isArray(result) ? result : []))
       .catch((err) => {
+        setOrders([]);
         setError(err.message);
         push(err.message, 'error');
       })
@@ -35,6 +36,8 @@ export default function OrdersPage() {
         <Loading />
       ) : error ? (
         <EmptyState title="Could not load orders" body={error} />
+      ) : !Array.isArray(orders) ? (
+        <EmptyState title="Unable to load orders" body="The order list was not a valid array." />
       ) : orders.length === 0 ? (
         <EmptyState title="No orders yet" body="Complete a checkout to see history here." />
       ) : (
@@ -52,7 +55,7 @@ export default function OrdersPage() {
                 </div>
               </div>
               <p>
-                {order.items.map((item) => `${item.productName} × ${item.quantity}`).join(', ')}
+                {(order.items || []).map((item) => `${item.productName} × ${item.quantity}`).join(', ')}
               </p>
               <div className="row space">
                 <strong>{formatMoney(order.total)}</strong>

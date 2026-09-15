@@ -75,7 +75,7 @@ export default function CheckoutPage() {
             <StatusBadge status={checkout.status} />
           </div>
           <div className="stack">
-            {checkout.items.map((item) => (
+            {(checkout.items || []).map((item) => (
               <div key={item.productId} className="row space">
                 <div>
                   <strong>{item.productName}</strong>

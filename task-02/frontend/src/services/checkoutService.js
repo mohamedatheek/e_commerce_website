@@ -1,21 +1,26 @@
-import api from './api';
+import api, { unwrapPayload } from './api';
 
 export async function createCheckout(items) {
-  const { data } = await api.post('/checkout', {
-    items: items.map((item) => ({
+  const payload = Array.isArray(items) ? items : [];
+  const response = await api.post('/checkout', {
+    items: payload.map((item) => ({
       productId: item.productId,
       quantity: item.quantity,
     })),
   });
-  return data.data;
+  return unwrapPayload(response);
 }
 
 export async function fetchCheckout(id) {
-  const { data } = await api.get(`/checkout/${id}`);
-  return data.data;
+  const response = await api.get(`/checkout/${id}`);
+  const checkout = unwrapPayload(response) || {};
+  return {
+    ...checkout,
+    items: Array.isArray(checkout.items) ? checkout.items : [],
+  };
 }
 
 export async function payCheckout(id, outcome) {
-  const { data } = await api.post(`/checkout/${id}/payment`, { outcome });
-  return data.data;
+  const response = await api.post(`/checkout/${id}/payment`, { outcome });
+  return unwrapPayload(response);
 }

@@ -82,7 +82,7 @@ export default function OrderDetailsPage() {
       <div className="split">
         <div className="card stack" style={{ padding: 20 }}>
           <h2>Items</h2>
-          {order.items.map((item) => (
+          {(order.items || []).map((item) => (
             <div key={`${item.productId}-${item.productName}`} className="row space">
               <div>
                 <strong>{item.productName}</strong>
@@ -103,7 +103,7 @@ export default function OrderDetailsPage() {
         <aside className="card stack" style={{ padding: 20 }}>
           <h2>Status history</h2>
           <div className="timeline">
-            {order.history.map((entry, index) => (
+            {(order.history || []).map((entry, index) => (
               <article key={`${entry.createdAt}-${index}`}>
                 <StatusBadge status={entry.toStatus} />
                 <p>{entry.note}</p>
