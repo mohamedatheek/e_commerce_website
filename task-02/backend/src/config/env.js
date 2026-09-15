@@ -1,7 +1,8 @@
 const path = require('path');
+
 require('dotenv').config({
   path: path.resolve(__dirname, '../../.env'),
-  override: true,
+  override: false,
 });
 
 function required(name) {
@@ -21,7 +22,7 @@ function databaseUrl() {
     value.includes('YOUR_PASSWORD');
   if (looksLikePlaceholder) {
     throw new Error(
-      'DATABASE_URL is still the placeholder from .env.example. Open task-02/backend/.env and paste your Neon connection string, then run npm run migrate && npm run seed && npm run dev.'
+      'DATABASE_URL is still the placeholder from .env.example. Set a real Postgres/Neon DATABASE_URL, then run npm run migrate && npm run seed.'
     );
   }
   return value;
@@ -37,6 +38,7 @@ const env = {
   frontendUrl: (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, ''),
   reservationMinutes: Number(process.env.RESERVATION_MINUTES) || 5,
   demoUserId: process.env.DEMO_USER_ID || '11111111-1111-4111-8111-111111111111',
+  usesNeon: /neon\.tech/i.test(process.env.DATABASE_URL || ''),
 };
 
 module.exports = { env };

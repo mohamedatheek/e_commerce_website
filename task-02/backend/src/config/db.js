@@ -7,7 +7,7 @@ function getSslConfig(connectionString) {
   if (isLocal) {
     return false;
   }
-  // Neon and most hosted Postgres providers require SSL.
+  // Neon and Railway hosted Postgres require SSL.
   return { rejectUnauthorized: false };
 }
 

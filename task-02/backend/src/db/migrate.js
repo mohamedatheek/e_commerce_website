@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { pool } = require('../config/db');
 const { logger } = require('../utils/logger');
+const { splitSqlStatements } = require('./sql');
 
 async function migrate() {
   await pool.query(`
@@ -29,10 +30,13 @@ async function migrate() {
     }
 
     const sql = fs.readFileSync(path.join(migrationsDir, filename), 'utf8');
+    const statements = splitSqlStatements(sql);
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query(sql);
+      for (const statement of statements) {
+        await client.query(statement);
+      }
       await client.query('INSERT INTO schema_migrations (filename) VALUES ($1)', [filename]);
       await client.query('COMMIT');
       logger.info(`Applied ${filename}`);
